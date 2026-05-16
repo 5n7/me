@@ -1,0 +1,22 @@
+---
+interface Props {
+	num: string;
+	kicker: string;
+	title: string;
+	sub?: string;
+	marginalia?: string;
+}
+
+const { num, kicker, title, sub, marginalia } = Astro.props;
+---
+
+<header class="vB-head">
+  <div class="vB-head-meta">
+    <span class="vB-head-num">№ {num}</span>
+    <span class="vB-head-rule"></span>
+    <span class="vB-head-kicker">{kicker}</span>
+  </div>
+  <h2 class="vB-head-title">{title}</h2>
+  {sub ? <p class="vB-head-sub">{sub}</p> : null}
+  {marginalia ? <aside class="vB-head-margin">{marginalia}</aside> : null}
+</header>

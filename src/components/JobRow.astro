@@ -1,0 +1,30 @@
+---
+interface Props {
+	range: string;
+	title: string;
+	org: string;
+	body: string;
+	num: string;
+	tag?: "Current" | "Side";
+}
+
+const TAG_CLASS = {
+	Current: "is-current",
+	Side: "is-side",
+} as const;
+
+const { range, title, org, body, num, tag } = Astro.props;
+---
+
+<li class="vB-job">
+  <div class="vB-job-side">
+    <div class="vB-job-range">{range}</div>
+    {tag && <div class:list={["vB-job-tag", TAG_CLASS[tag]]}>{tag}</div>}
+  </div>
+  <div class="vB-job-main">
+    <div class="vB-job-role">{title}</div>
+    <div class="vB-job-org">{org}</div>
+    <p class="vB-job-body">{body}</p>
+  </div>
+  <div class="vB-job-num" aria-hidden="true">{num}</div>
+</li>

@@ -1,0 +1,355 @@
+---
+import JobRow from "../components/JobRow.astro";
+import ListRow from "../components/ListRow.astro";
+import Reveal from "../components/Reveal.astro";
+import SectionHead from "../components/SectionHead.astro";
+import { heroHighlights, portfolio } from "../data/portfolio.ts";
+import Base from "../layouts/Base.astro";
+import { pad2 } from "../lib/format.ts";
+import "../styles/portfolio.css";
+
+const navItems = [
+	{ id: "vB-about", label: "01 — About" },
+	{ id: "vB-work", label: "02 — Work" },
+	{ id: "vB-education", label: "03 — Education" },
+	{ id: "vB-talks", label: "04 — Presentations" },
+	{ id: "vB-writing", label: "05 — Publications" },
+	{ id: "vB-awards", label: "06 — Awards" },
+	{ id: "vB-contact", label: "07 — Contact" },
+];
+
+function toRoman(n: number): string {
+	const table: ReadonlyArray<readonly [number, string]> = [
+		[1000, "M"],
+		[900, "CM"],
+		[500, "D"],
+		[400, "CD"],
+		[100, "C"],
+		[90, "XC"],
+		[50, "L"],
+		[40, "XL"],
+		[10, "X"],
+		[9, "IX"],
+		[5, "V"],
+		[4, "IV"],
+		[1, "I"],
+	];
+	let out = "";
+	let remaining = n;
+	for (const [value, symbol] of table) {
+		while (remaining >= value) {
+			out += symbol;
+			remaining -= value;
+		}
+	}
+	return out;
+}
+
+const tokyoYearStr = new Intl.DateTimeFormat("en-US", {
+	timeZone: "Asia/Tokyo",
+	year: "numeric",
+}).format(new Date());
+const coloYear = Number(tokyoYearStr);
+const mastYearRoman = toRoman(coloYear);
+
+const expTotal = portfolio.experience.length;
+const eduTotal = portfolio.education.length;
+const linksTotal = pad2(portfolio.links.length);
+---
+
+<Base>
+  <a class="vB-skip" href="#vB-about">Skip to content</a>
+  <div class="progress"><div class="progress-fill"></div></div>
+
+  <main class="stage">
+    <div class="pane">
+      <article class="vB-root">
+        <header class="vB-mast">
+          <div class="vB-mast-bar">
+            <span class="vB-mast-id">5n7<span class="vB-mast-id-dim"
+              >.me</span></span>
+            <span class="vB-mast-sep">·</span>
+            <span class="vB-mast-issue">{mastYearRoman}</span>
+            <span class="vB-mast-sep">·</span>
+            <span class="vB-mast-issue" data-mast-day>Day —/—</span>
+            <span class="vB-mast-spacer"></span>
+            <a class="vB-mast-link" href="#vB-contact">contact ↘</a>
+            <span class="vB-mast-sep">·</span>
+            <span class="vB-mast-meta">Tokyo · <span data-mast-time
+              >—:— JST</span></span>
+          </div>
+
+          <div class="vB-hero">
+            <div class="vB-hero-kicker">
+              <span class="vB-dot vB-dot--live"></span>
+              <span>Available for conversations</span>
+              <span class="vB-hero-kicker-sep">·</span>
+              <span>ja/en</span>
+            </div>
+
+            <h1 class="vB-hero-title">
+              <span class="vB-hero-first">Shunta</span>
+              <span class="vB-hero-last">Komatsu<span
+                  class="vB-hero-cursor"
+                ></span></span>
+            </h1>
+
+            <div class="vB-hero-jp">
+              <span lang="ja">{portfolio.handleJa}</span>
+              <span class="vB-hero-jp-sep">—</span>
+              <span>{portfolio.role}</span>
+            </div>
+
+            <div class="vB-hero-lede-row">
+              <figure class="vB-portrait">
+                <img
+                  src="/profile.webp"
+                  alt="Shunta Komatsu — portrait"
+                  width="180"
+                  height="180"
+                  decoding="async"
+                  fetchpriority="high"
+                />
+                <figcaption>fig. 01 — portrait</figcaption>
+              </figure>
+              <p class="vB-hero-lede">{portfolio.tagline}</p>
+            </div>
+
+            <div class="vB-hero-grid">
+              {heroHighlights.map((h) => (
+                <div class="vB-hero-cell">
+                  <div class="vB-hero-label">{h.label}</div>
+                  <div class="vB-hero-val">
+                    {h.value}
+                    {h.valueAux && (
+                      <> <span class="vB-hero-val-aux">{h.valueAux}</span></>
+                    )}
+                  </div>
+                  <div class="vB-hero-foot">{h.foot}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <nav class="vB-nav" aria-label="contents">
+            <span class="vB-nav-label">Contents</span>
+            {navItems.map((n) => <a href={`#${n.id}`}>{n.label}</a>)}
+          </nav>
+        </header>
+
+        <Reveal as="section" class="vB-section" id="vB-about">
+          <SectionHead
+            num="01"
+            kicker="ABOUT"
+            title="How I got here."
+            sub="Software engineering and team management, mixed."
+          />
+          <div class="vB-cols">
+            <div class="vB-col vB-col--text">
+              <p class="vB-prose vB-prose--lead">
+                <span class="vB-dropcap">O</span>ver the past five years, I've
+                worked across software engineering and team management. I hold a
+                Master's degree in Computer Science and a strong interest in AI,
+                FinTech, and real estate.
+              </p>
+            </div>
+            <aside class="vB-col vB-col--meta">
+              <div class="vB-meta-head">Vitals</div>
+              <div class="vB-meta-row">
+                <span class="vB-meta-k">Name</span>
+                <span class="vB-meta-v">
+                  {portfolio.name} <span class="vB-meta-aux">/
+                    {portfolio.handleJa}</span>
+                </span>
+              </div>
+              <div class="vB-meta-row">
+                <span class="vB-meta-k">Born</span>
+                <span class="vB-meta-v">{portfolio.birthplace}</span>
+              </div>
+              <div class="vB-meta-row">
+                <span class="vB-meta-k">Living</span>
+                <span class="vB-meta-v">{portfolio.location}</span>
+              </div>
+              <div class="vB-meta-row">
+                <span class="vB-meta-k">Languages</span>
+                <span class="vB-meta-v">{portfolio.languages.join(" · ")}</span>
+              </div>
+              <div class="vB-meta-row">
+                <span class="vB-meta-k">Interests</span>
+                <span class="vB-meta-v">{portfolio.interests.join(", ")}</span>
+              </div>
+            </aside>
+          </div>
+        </Reveal>
+
+        <Reveal as="section" class="vB-section" id="vB-work">
+          <SectionHead
+            num="02"
+            kicker="EXPERIENCE"
+            title="Where I've shipped."
+            sub="Merpay Payment Platform; Yomoyama real estate; RINGBELL marriage agency."
+          />
+          <ol class="vB-jobs">
+            {portfolio.experience.map((j, i) => (
+              <JobRow
+                range={j.range}
+                title={j.role}
+                org={j.org}
+                body={j.body}
+                num={pad2(expTotal - i)}
+                tag={j.tag}
+              />
+            ))}
+          </ol>
+          <p class="vB-foot">
+            Full work history —{" "}
+            <a
+              href="https://www.linkedin.com/in/shuntak"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              linkedin.com/in/shuntak
+            </a>
+          </p>
+        </Reveal>
+
+        <Reveal as="section" class="vB-section" id="vB-education">
+          <SectionHead
+            num="03"
+            kicker="EDUCATION"
+            title="Where I studied."
+            sub="Tokyo University of Science · computer science and image processing research."
+          />
+          <ol class="vB-jobs">
+            {portfolio.education.map((e, i) => (
+              <JobRow
+                range={e.range}
+                title={e.degree}
+                org={e.org}
+                body={e.body}
+                num={pad2(eduTotal - i)}
+              />
+            ))}
+          </ol>
+        </Reveal>
+
+        <Reveal as="section" class="vB-section" id="vB-talks">
+          <SectionHead
+            num="04"
+            kicker="PRESENTATIONS"
+            title="Talks I've given."
+            sub="Professional & academic."
+          />
+          <div class="vB-sublist-head">— Professional —</div>
+          <ul class="vB-list">
+            {portfolio.talks.map((t, i) => (
+              <ListRow
+                num={pad2(i + 1)}
+                title={t.title}
+                href={t.href}
+                venue={t.venue}
+                date={t.date}
+              />
+            ))}
+          </ul>
+          <div class="vB-sublist-head">— Academic —</div>
+          <ul class="vB-list">
+            {portfolio.academic.map((t, i) => (
+              <ListRow
+                num={pad2(i + 1)}
+                title={t.title}
+                venue={t.venue}
+                date={t.date}
+              />
+            ))}
+          </ul>
+        </Reveal>
+
+        <Reveal as="section" class="vB-section" id="vB-writing">
+          <SectionHead
+            num="05"
+            kicker="PUBLICATIONS"
+            title="What I've written."
+            sub="On the Mercari Engineering Blog."
+          />
+          <ul class="vB-list">
+            {portfolio.publications.map((p, i) => (
+              <ListRow
+                num={pad2(i + 1)}
+                title={p.title}
+                href={p.href}
+                venue={p.venue}
+                date={p.date}
+              />
+            ))}
+          </ul>
+        </Reveal>
+
+        <Reveal as="section" class="vB-section" id="vB-awards">
+          <SectionHead
+            num="06"
+            kicker="AWARDS & FUNDING"
+            title="Recognition."
+          />
+          <div class="vB-awards">
+            {portfolio.awards.map((a) => (
+              <div class="vB-award">
+                <div class="vB-award-year">{a.date}</div>
+                <div class="vB-award-main">
+                  <div class="vB-award-title">{a.title}</div>
+                  <div class="vB-award-org">{a.org}</div>
+                </div>
+                <div class="vB-award-mark" aria-hidden="true">
+                  ★
+                </div>
+              </div>
+            ))}
+          </div>
+        </Reveal>
+
+        <Reveal as="section" class="vB-section" id="vB-contact">
+          <SectionHead
+            num="07"
+            kicker="CONTACT"
+            title="Say hello."
+            sub="Mail is best."
+          />
+          <div class="vB-contact-grid">
+            {portfolio.links.map((l, i) => {
+            	const external = l.href.startsWith("http");
+            	return (
+               <a
+                 href={l.href}
+                 target={external ? "_blank" : undefined}
+                 rel={external ? "noopener noreferrer" : undefined}
+                 class="vB-contact-card"
+               >
+                 <div class="vB-contact-row-top">
+                   <div class="vB-contact-num">
+                     {pad2(i + 1)} / {linksTotal}
+                   </div>
+                   <div class="vB-contact-arrow">↗</div>
+                 </div>
+                 <div class="vB-contact-label">{l.label}</div>
+                 <div class="vB-contact-val">{l.short}</div>
+               </a>
+             );
+            })}
+          </div>
+        </Reveal>
+
+        <footer class="vB-colo">
+          <div class="vB-colo-divider" aria-hidden="true">⁂</div>
+          <div class="vB-colo-v">
+            © <span>{coloYear}</span> Shunta Komatsu — all rights reserved.
+          </div>
+          <div class="vB-colo-end">— end —</div>
+        </footer>
+      </article>
+    </div>
+  </main>
+
+  <script>
+  import "../scripts/portfolio.client.ts";
+  </script>
+</Base>

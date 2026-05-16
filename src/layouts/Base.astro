@@ -1,0 +1,126 @@
+---
+import { portfolio, siteMetadata } from "../data/portfolio.ts";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title = siteMetadata.title, description = siteMetadata.description } =
+	Astro.props;
+
+const ogDescription = siteMetadata.ogDescription;
+const siteUrl = siteMetadata.siteUrl;
+const homeUrl = `${siteUrl}/`;
+const ogImage = siteMetadata.ogImage;
+const profileImage = siteMetadata.profileImage;
+const fontsHref =
+	"https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap";
+
+const personLd = {
+	"@context": "https://schema.org",
+	"@type": "Person",
+	name: portfolio.name,
+	alternateName: portfolio.handleJa,
+	url: homeUrl,
+	image: profileImage,
+	jobTitle: "Engineering Manager",
+	worksFor: [
+		{ "@type": "Organization", name: "Mercari, Inc." },
+		{ "@type": "Organization", name: "Yomoyama, Inc." },
+		{ "@type": "Organization", name: "RINGBELL, Inc." },
+	],
+	address: {
+		"@type": "PostalAddress",
+		addressLocality: "Tokyo",
+		addressCountry: "JP",
+	},
+	sameAs: [
+		"https://github.com/5n7",
+		"https://www.linkedin.com/in/shuntak",
+		"https://speakerdeck.com/iamshunta",
+	],
+};
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- FOUC-prevention: set data-theme before first paint -->
+    <script is:inline>
+    (function () {
+	var root = document.documentElement;
+	var stored = null;
+	try {
+		stored = window.localStorage.getItem("theme");
+	} catch (_) {}
+	if (stored === "dark" || stored === "light") {
+		root.setAttribute("data-theme", stored);
+	} else if (window.matchMedia) {
+		var dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+		root.setAttribute("data-theme", dark ? "dark" : "light");
+	}
+})();
+    </script>
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={portfolio.name} />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content="#f6f4ec"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0d0c0a"
+      media="(prefers-color-scheme: dark)"
+    />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:url" content={homeUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ja_JP" />
+    <meta property="profile:first_name" content="Shunta" />
+    <meta property="profile:last_name" content="Komatsu" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="canonical" href={homeUrl} />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <Fragment
+      set:html={`<link rel="preload" as="style" href="${fontsHref}" onload="this.onload=null;this.rel='stylesheet'">`}
+    />
+    <noscript>
+      <link rel="stylesheet" href={fontsHref} />
+    </noscript>
+
+    <!-- JSON-LD Person schema -->
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(personLd)}
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

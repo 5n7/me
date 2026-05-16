@@ -1,0 +1,28 @@
+---
+interface Props {
+	num: string;
+	title: string;
+	href?: string;
+	venue: string;
+	date: string;
+}
+
+const { num, title, href, venue, date } = Astro.props;
+---
+
+<li class="vB-list-row">
+  <span class="vB-list-num">{num}</span>
+  {href ? (
+    <a
+      class="vB-list-title"
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {title}
+      <span class="vB-list-arrow" aria-hidden="true">↗</span>
+    </a>
+  ) : <span class="vB-list-title">{title}</span>}
+  <span class="vB-list-venue">{venue}</span>
+  <span class="vB-list-date">{date}</span>
+</li>

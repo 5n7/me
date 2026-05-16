@@ -1,0 +1,25 @@
+{
+	"name": "5n7-me",
+	"type": "module",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"astro": "astro",
+		"build": "astro build",
+		"check": "astro check",
+		"dev": "astro dev",
+		"fmt": "dprint fmt",
+		"fmt:check": "dprint check",
+		"lint": "oxlint",
+		"preview": "astro preview"
+	},
+	"dependencies": {
+		"astro": "^6.3.3"
+	},
+	"devDependencies": {
+		"@astrojs/check": "^0.9.9",
+		"dprint": "^0.54.0",
+		"oxlint": "^1.65.0",
+		"typescript": "^6.0.3"
+	}
+}
