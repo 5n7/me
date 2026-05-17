@@ -19,8 +19,8 @@ const { num, title, href, venue, date } = Astro.props;
       target="_blank"
       rel="noopener noreferrer"
     >
-      {title}
-      <span class="vB-list-arrow" aria-hidden="true">↗</span>
+      {title}{" "}<span class="vB-list-arrow" aria-hidden="true"
+      >↗</span>{" "}<span class="vB-sr-only">(opens in new tab)</span>
     </a>
   ) : <span class="vB-list-title">{title}</span>}
   <span class="vB-list-venue">{venue}</span>

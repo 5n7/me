@@ -208,7 +208,8 @@ const linksTotal = pad2(portfolio.links.length);
               target="_blank"
               rel="noopener noreferrer"
             >
-              linkedin.com/in/shuntak
+              linkedin.com/in/shuntak{" "}<span class="vB-sr-only"
+              >(opens in new tab)</span>
             </a>
           </p>
         </Reveal>
@@ -332,6 +333,9 @@ const linksTotal = pad2(portfolio.links.length);
                  </div>
                  <div class="vB-contact-label">{l.label}</div>
                  <div class="vB-contact-val">{l.short}</div>
+                 {external && (
+                   <span class="vB-sr-only">(opens in new tab)</span>
+                 )}
                </a>
              );
             })}
