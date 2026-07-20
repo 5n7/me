@@ -213,6 +213,12 @@ export const portfolio: Portfolio = {
 	],
 	publications: [
 		{
+			title: "決済プラットフォームと経理を繋ぐ MoneyFlow",
+			venue: "Mercari Engineering Blog",
+			date: "Jun 2026",
+			href: "https://engineering.mercari.com/blog/entry/20260605-moneyflow-bridging-payment-and-accounting/",
+		},
+		{
 			title: "Payment Platform の 2025 年: メルカリグループを支える決済基盤のこれまでとこれから",
 			venue: "Mercari Engineering Blog",
 			date: "Dec 2025",
