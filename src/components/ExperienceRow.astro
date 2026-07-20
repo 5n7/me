@@ -1,0 +1,39 @@
+---
+import { parseRangeMonths } from "../lib/format.ts";
+
+interface Props {
+	role: string;
+	org: string;
+	range: string;
+	body: string;
+	tag?: "Current" | "Side";
+}
+
+const { role, org, range, body, tag } = Astro.props;
+
+// Tenure trace bar: width scales with span in months, clamped 24–144px.
+const months = parseRangeMonths(range, new Date(__BUILD_DATE__));
+const barWidth = Math.min(144, Math.max(24, months * 4));
+const ongoing = /present/i.test(range);
+const barColor = ongoing ? "var(--accent)" : "var(--rule)";
+---
+
+<article class="ledger-row ledger-row--exp">
+  <div class="ledger-date">
+    {range}
+    <span
+      class="tenure"
+      style={`width:${barWidth}px;background:${barColor};`}
+      aria-hidden="true"
+    ></span>
+  </div>
+  <div class="ledger-body">
+    <h3><span class="role">{role}</span> — <span class="org">{org}</span></h3>
+    <p>{body}</p>
+  </div>
+  {tag && (
+    <span
+      class:list={["tag", tag === "Current" ? "tag--current" : "tag--side"]}
+    >{tag}</span>
+  )}
+</article>

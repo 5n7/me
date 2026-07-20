@@ -15,7 +15,7 @@ const homeUrl = `${siteUrl}/`;
 const ogImage = siteMetadata.ogImage;
 const profileImage = siteMetadata.profileImage;
 const fontsHref =
-	"https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap";
+	"https://fonts.googleapis.com/css2?family=Archivo:wght@400..640&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+JP:wght@400..500&display=swap";
 
 const personLd = {
 	"@context": "https://schema.org",
@@ -49,20 +49,15 @@ const personLd = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- FOUC-prevention: set data-theme before first paint -->
+    <!-- Apply a stored theme choice before first paint to avoid FOUC. -->
     <script is:inline>
     (function () {
-	var root = document.documentElement;
-	var stored = null;
 	try {
-		stored = window.localStorage.getItem("theme");
-	} catch (_) {}
-	if (stored === "dark" || stored === "light") {
-		root.setAttribute("data-theme", stored);
-	} else if (window.matchMedia) {
-		var dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-		root.setAttribute("data-theme", dark ? "dark" : "light");
-	}
+		var t = localStorage.getItem("theme");
+		if (t === "light" || t === "dark") {
+			document.documentElement.setAttribute("data-theme", t);
+		}
+	} catch (e) {}
 })();
     </script>
 
@@ -72,12 +67,12 @@ const personLd = {
     <meta name="color-scheme" content="light dark" />
     <meta
       name="theme-color"
-      content="#f6f4ec"
+      content="#FAFAF7"
       media="(prefers-color-scheme: light)"
     />
     <meta
       name="theme-color"
-      content="#0d0c0a"
+      content="#121210"
       media="(prefers-color-scheme: dark)"
     />
 
@@ -106,12 +101,7 @@ const personLd = {
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <Fragment
-      set:html={`<link rel="preload" as="style" href="${fontsHref}" onload="this.onload=null;this.rel='stylesheet'">`}
-    />
-    <noscript>
-      <link rel="stylesheet" href={fontsHref} />
-    </noscript>
+    <link rel="stylesheet" href={fontsHref} />
 
     <!-- JSON-LD Person schema -->
     <script

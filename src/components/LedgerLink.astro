@@ -1,0 +1,54 @@
+---
+import { isJapanese } from "../lib/format.ts";
+
+interface Props {
+	date: string;
+	title: string;
+	venue: string;
+	venueHighlight?: string;
+	href: string;
+}
+
+const { date, title, venue, venueHighlight, href } = Astro.props;
+
+const titleJa = isJapanese(title);
+
+// Glue the inline mobile arrow to the title's last word in a nowrap wrapper so
+// it never orphans. Only for Latin titles: a Japanese title's trailing segment
+// after the last space can be a long unbreakable run that would overflow at
+// 320px, so JP titles append the arrow directly and wrap naturally instead.
+const lastSpace = title.lastIndexOf(" ");
+const useTail = !titleJa && lastSpace >= 0;
+const titleHead = useTail ? title.slice(0, lastSpace + 1) : "";
+const titleLast = useTail ? title.slice(lastSpace + 1) : title;
+
+// Optional accent segment in the venue line, driven by the talk data.
+const hotIdx = venueHighlight ? venue.indexOf(venueHighlight) : -1;
+const hotLen = venueHighlight?.length ?? 0;
+const venueBefore = hotIdx >= 0 ? venue.slice(0, hotIdx) : venue;
+const venueHot = hotIdx >= 0 ? venue.slice(hotIdx, hotIdx + hotLen) : "";
+const venueAfter = hotIdx >= 0 ? venue.slice(hotIdx + hotLen) : "";
+---
+
+<a
+  class="ledger-row ledger-row--link"
+  href={href}
+  target="_blank"
+  rel="noopener"
+>
+  <span class="ledger-date">{date}</span>
+  <span class="ledger-body">
+    <span class="title" lang={titleJa ? "ja" : undefined}>
+      {useTail ? (
+        <>{titleHead}<span class="title-tail">{titleLast}<span
+              class="arrow-inline"
+              aria-hidden="true"
+            >↗</span></span></>
+      ) : <>{title}<span class="arrow-inline" aria-hidden="true">↗</span></>}
+    </span>
+    <span class="venue">{venueBefore}{venueHot && (
+      <em class="hot">{venueHot}</em>
+    )}{venueAfter}</span>
+  </span>
+  <span class="arrow" aria-hidden="true">↗</span>
+</a>

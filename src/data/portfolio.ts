@@ -22,8 +22,15 @@ export interface PortfolioEducation {
 export interface PortfolioTalk {
 	title: string;
 	venue: string;
+	/* Substring of `venue` rendered in accent (at most one talk uses this). */
+	venueHighlight?: string;
 	date: string;
 	href: string;
+}
+
+export interface PortfolioLanguage {
+	name: string;
+	level: string;
 }
 
 export interface PortfolioAcademic {
@@ -64,11 +71,11 @@ export interface SiteMetadata {
 export interface Portfolio {
 	name: string;
 	handleJa: string;
-	role: string;
-	tagline: string;
+	roles: string[];
+	taglineParts: string[];
 	location: string;
 	birthplace: string;
-	languages: string[];
+	languages: PortfolioLanguage[];
 	interests: string[];
 	links: PortfolioLink[];
 	experience: PortfolioExperience[];
@@ -82,11 +89,14 @@ export interface Portfolio {
 export const portfolio: Portfolio = {
 	name: "Shunta Komatsu",
 	handleJa: "小松 俊太",
-	role: "Engineering Manager, Software Engineer, Photographer, Corgi Lover",
-	tagline: "Payment platform. AI-native teams. Small businesses",
+	roles: ["Engineering Manager", "Software Engineer", "Photographer", "Corgi Lover"],
+	taglineParts: ["Payment platform", "AI-native teams", "Small businesses"],
 	location: "Tokyo, Japan",
 	birthplace: "Kanagawa, Japan",
-	languages: ["Japanese — native", "English — fluent"],
+	languages: [
+		{ name: "Japanese", level: "native" },
+		{ name: "English", level: "fluent" },
+	],
 	interests: ["Go", "Observability", "FinTech", "Payment Systems", "Real Estate", "Stocks"],
 	links: [
 		{ label: "Email", href: "mailto:hi@5n7.me", short: "hi@5n7.me" },
@@ -171,6 +181,7 @@ export const portfolio: Portfolio = {
 		{
 			title: "Cursor Meetup Tokyo",
 			venue: "Cursor Meetup Tokyo · 6000+ attendees",
+			venueHighlight: "6000+ attendees",
 			date: "Jun 2025",
 			href: "https://speakerdeck.com/iamshunta/cursor-meetup-tokyo",
 		},

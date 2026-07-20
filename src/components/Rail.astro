@@ -1,0 +1,13 @@
+---
+interface Props {
+	idx: string;
+	label: string;
+	sticky?: boolean;
+}
+
+const { idx, label, sticky = false } = Astro.props;
+---
+
+<h2 class:list={["rail", sticky && "rail--sticky"]}>
+  <span class="idx">{idx}</span> {label}
+</h2>

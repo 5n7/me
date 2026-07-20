@@ -1,359 +1,300 @@
 ---
-import JobRow from "../components/JobRow.astro";
-import ListRow from "../components/ListRow.astro";
-import Reveal from "../components/Reveal.astro";
-import SectionHead from "../components/SectionHead.astro";
+import ExperienceRow from "../components/ExperienceRow.astro";
+import LedgerLink from "../components/LedgerLink.astro";
+import Rail from "../components/Rail.astro";
 import { heroHighlights, portfolio } from "../data/portfolio.ts";
 import Base from "../layouts/Base.astro";
-import { pad2 } from "../lib/format.ts";
+import { isJapanese } from "../lib/format.ts";
 import "../styles/portfolio.css";
 
-const navItems = [
-	{ id: "vB-about", label: "01 — About" },
-	{ id: "vB-work", label: "02 — Work" },
-	{ id: "vB-education", label: "03 — Education" },
-	{ id: "vB-talks", label: "04 — Presentations" },
-	{ id: "vB-writing", label: "05 — Publications" },
-	{ id: "vB-awards", label: "06 — Awards" },
-	{ id: "vB-contact", label: "07 — Contact" },
+const roles = portfolio.roles.join(" · ");
+const interests = portfolio.interests.join(" / ");
+const langValue = portfolio.languages
+	.map((l) => `${l.name} (${l.level})`)
+	.join(" · ");
+
+// Single source of truth for section numbering: the hero contents nav and
+// each section's <Rail> both derive from this list.
+const sections = [
+	{ id: "now", idx: "02", label: "Now" },
+	{ id: "about", idx: "03", label: "About" },
+	{ id: "experience", idx: "04", label: "Experience" },
+	{ id: "education", idx: "05", label: "Education" },
+	{ id: "talks", idx: "06", label: "Talks" },
+	{ id: "writing", idx: "07", label: "Writing" },
+	{ id: "awards", idx: "08", label: "Awards" },
+	{ id: "contact", idx: "09", label: "Contact" },
 ];
 
-function toRoman(n: number): string {
-	const table: ReadonlyArray<readonly [number, string]> = [
-		[1000, "M"],
-		[900, "CM"],
-		[500, "D"],
-		[400, "CD"],
-		[100, "C"],
-		[90, "XC"],
-		[50, "L"],
-		[40, "XL"],
-		[10, "X"],
-		[9, "IX"],
-		[5, "V"],
-		[4, "IV"],
-		[1, "I"],
-	];
-	let out = "";
-	let remaining = n;
-	for (const [value, symbol] of table) {
-		while (remaining >= value) {
-			out += symbol;
-			remaining -= value;
-		}
-	}
-	return out;
-}
+const rail = (id: string): { idx: string; label: string } => {
+	const s = sections.find((sec) => sec.id === id);
+	if (!s) throw new Error(`Unknown section id: ${id}`);
+	return { idx: s.idx, label: s.label };
+};
 
-const tokyoYearStr = new Intl.DateTimeFormat("en-US", {
-	timeZone: "Asia/Tokyo",
-	year: "numeric",
-}).format(new Date());
-const coloYear = Number(tokyoYearStr);
-const mastYearRoman = toRoman(coloYear);
-
-const expTotal = portfolio.experience.length;
-const eduTotal = portfolio.education.length;
-const linksTotal = pad2(portfolio.links.length);
+const buildDate = __BUILD_DATE__;
+const commit = __COMMIT_HASH__;
+const year = buildDate.slice(0, 4);
 ---
 
 <Base>
-  <a class="vB-skip" href="#vB-about">Skip to content</a>
-  <div class="progress"><div class="progress-fill"></div></div>
+  <a class="skip" href="#main">Skip to content</a>
 
-  <main class="stage">
-    <div class="pane">
-      <article class="vB-root">
-        <header class="vB-mast">
-          <div class="vB-mast-bar">
-            <span class="vB-mast-id">5n7<span class="vB-mast-id-dim"
-              >.me</span></span>
-            <span class="vB-mast-sep">·</span>
-            <span class="vB-mast-issue">{mastYearRoman}</span>
-            <span class="vB-mast-sep">·</span>
-            <span class="vB-mast-issue" data-mast-day>Day —/—</span>
-            <span class="vB-mast-spacer"></span>
-            <a class="vB-mast-link" href="#vB-contact">contact ↘</a>
-            <span class="vB-mast-sep">·</span>
-            <span class="vB-mast-meta">Tokyo · <span data-mast-time
-              >—:— JST</span></span>
-          </div>
+  <header class="hero">
+    <p class="hero-topline">
+      <span class="wordmark">5n7.me</span>
+      <span>Tokyo · UTC+09:00 · ja / en · <button
+          id="theme-toggle"
+          class="theme-toggle"
+          type="button"
+          aria-label="Switch theme"
+        >
+          <span data-theme-word="light">Light</span> / <span
+            data-theme-word="dark"
+          >Dark</span>
+        </button></span>
+    </p>
 
-          <div class="vB-hero">
-            <div class="vB-hero-kicker">
-              <span class="vB-dot vB-dot--live"></span>
-              <span>Available for conversations</span>
-              <span class="vB-hero-kicker-sep">·</span>
-              <span>ja/en</span>
-            </div>
+    <div class="hero-main">
+      <h1 class="hero-name"><span>Shunta</span><span>Komatsu</span></h1>
+      <figure class="hero-photo">
+        <img
+          src="/profile.webp"
+          alt="Portrait of Shunta Komatsu"
+          width="360"
+          height="360"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <figcaption>PORTRAIT — TOKYO 35.68°N 139.65°E</figcaption>
+      </figure>
+      <div class="hero-id">
+        <p class="hero-tagline">
+          {portfolio.taglineParts.map((part) => (
+            <>{part}<span class="stop">.</span>{" "}</>
+          ))}
+        </p>
+        <p class="hero-roles">{roles}</p>
+      </div>
+    </div>
 
-            <h1 class="vB-hero-title">
-              <span class="vB-hero-first">Shunta</span>
-              <span class="vB-hero-last">Komatsu<span
-                  class="vB-hero-cursor"
-                ></span></span>
-            </h1>
+    <hr class="rule-strong" />
 
-            <div class="vB-hero-jp">
-              <span lang="ja">{portfolio.handleJa}</span>
-              <span class="vB-hero-jp-sep">—</span>
-              <span>{portfolio.role}</span>
-            </div>
+    <div class="hero-foot">
+      <nav class="hero-toc" aria-label="Contents">
+        {sections.map((t) => (
+          <a href={`#${t.id}`}><span>{t.idx}</span> {t.label}</a>
+        ))}
+      </nav>
+    </div>
+  </header>
 
-            <div class="vB-hero-lede-row">
-              <figure class="vB-portrait">
-                <img
-                  src="/profile.webp"
-                  alt="Shunta Komatsu — portrait"
-                  width="180"
-                  height="180"
-                  decoding="async"
-                  fetchpriority="high"
-                />
-                <figcaption>fig. 01 — portrait</figcaption>
-              </figure>
-              <p class="vB-hero-lede">{portfolio.tagline}</p>
-            </div>
-
-            <div class="vB-hero-grid">
-              {heroHighlights.map((h) => (
-                <div class="vB-hero-cell">
-                  <div class="vB-hero-label">{h.label}</div>
-                  <div class="vB-hero-val">
-                    {h.value}
-                    {h.valueAux && (
-                      <> <span class="vB-hero-val-aux">{h.valueAux}</span></>
-                    )}
-                  </div>
-                  <div class="vB-hero-foot">{h.foot}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <nav class="vB-nav" aria-label="contents">
-            <span class="vB-nav-label">Contents</span>
-            {navItems.map((n) => <a href={`#${n.id}`}>{n.label}</a>)}
-          </nav>
-        </header>
-
-        <Reveal as="section" class="vB-section" id="vB-about">
-          <SectionHead
-            num="01"
-            kicker="ABOUT"
-            title="How I got here."
-            sub="Software engineering and team management, mixed."
-          />
-          <div class="vB-cols">
-            <div class="vB-col vB-col--text">
-              <p class="vB-prose vB-prose--lead">
-                <span class="vB-dropcap">O</span>ver the past five years, I've
-                worked across software engineering and team management. I hold a
-                Master's degree in Computer Science and a strong interest in AI,
-                FinTech, and real estate.
-              </p>
-            </div>
-            <aside class="vB-col vB-col--meta">
-              <div class="vB-meta-head">Vitals</div>
-              <div class="vB-meta-row">
-                <span class="vB-meta-k">Name</span>
-                <span class="vB-meta-v">
-                  {portfolio.name} <span class="vB-meta-aux">/
-                    {portfolio.handleJa}</span>
-                </span>
-              </div>
-              <div class="vB-meta-row">
-                <span class="vB-meta-k">Born</span>
-                <span class="vB-meta-v">{portfolio.birthplace}</span>
-              </div>
-              <div class="vB-meta-row">
-                <span class="vB-meta-k">Living</span>
-                <span class="vB-meta-v">{portfolio.location}</span>
-              </div>
-              <div class="vB-meta-row">
-                <span class="vB-meta-k">Languages</span>
-                <span class="vB-meta-v">{portfolio.languages.join(" · ")}</span>
-              </div>
-              <div class="vB-meta-row">
-                <span class="vB-meta-k">Interests</span>
-                <span class="vB-meta-v">{portfolio.interests.join(", ")}</span>
-              </div>
-            </aside>
-          </div>
-        </Reveal>
-
-        <Reveal as="section" class="vB-section" id="vB-work">
-          <SectionHead
-            num="02"
-            kicker="EXPERIENCE"
-            title="Where I've shipped."
-            sub="Merpay Payment Platform; Yomoyama real estate; RINGBELL marriage agency."
-          />
-          <ol class="vB-jobs">
-            {portfolio.experience.map((j, i) => (
-              <JobRow
-                range={j.range}
-                title={j.role}
-                org={j.org}
-                body={j.body}
-                num={pad2(expTotal - i)}
-                tag={j.tag}
-              />
-            ))}
-          </ol>
-          <p class="vB-foot">
-            Full work history —{" "}
-            <a
-              href="https://www.linkedin.com/in/shuntak"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              linkedin.com/in/shuntak{" "}<span class="vB-sr-only"
-              >(opens in new tab)</span>
-            </a>
+  <main id="main">
+    <section id="now" class="now">
+      {heroHighlights.map((h) => (
+        <div class="fact">
+          <p class="fact-label">{h.label}</p>
+          <p class="fact-value">
+            {h.value}{h.valueAux && <> <span>{h.valueAux}</span></>}
           </p>
-        </Reveal>
+          <p class="fact-foot">{h.foot}</p>
+        </div>
+      ))}
+    </section>
 
-        <Reveal as="section" class="vB-section" id="vB-education">
-          <SectionHead
-            num="03"
-            kicker="EDUCATION"
-            title="Where I studied."
-            sub="Tokyo University of Science · computer science and image processing research."
-          />
-          <ol class="vB-jobs">
-            {portfolio.education.map((e, i) => (
-              <JobRow
-                range={e.range}
-                title={e.degree}
-                org={e.org}
-                body={e.body}
-                num={pad2(eduTotal - i)}
-              />
-            ))}
-          </ol>
-        </Reveal>
-
-        <Reveal as="section" class="vB-section" id="vB-talks">
-          <SectionHead
-            num="04"
-            kicker="PRESENTATIONS"
-            title="Talks I've given."
-            sub="Professional & academic."
-          />
-          <div class="vB-sublist-head">— Professional —</div>
-          <ul class="vB-list">
-            {portfolio.talks.map((t, i) => (
-              <ListRow
-                num={pad2(i + 1)}
-                title={t.title}
-                href={t.href}
-                venue={t.venue}
-                date={t.date}
-              />
-            ))}
-          </ul>
-          <div class="vB-sublist-head">— Academic —</div>
-          <ul class="vB-list">
-            {portfolio.academic.map((t, i) => (
-              <ListRow
-                num={pad2(i + 1)}
-                title={t.title}
-                venue={t.venue}
-                date={t.date}
-              />
-            ))}
-          </ul>
-        </Reveal>
-
-        <Reveal as="section" class="vB-section" id="vB-writing">
-          <SectionHead
-            num="05"
-            kicker="PUBLICATIONS"
-            title="What I've written."
-            sub="On the Mercari Engineering Blog."
-          />
-          <ul class="vB-list">
-            {portfolio.publications.map((p, i) => (
-              <ListRow
-                num={pad2(i + 1)}
-                title={p.title}
-                href={p.href}
-                venue={p.venue}
-                date={p.date}
-              />
-            ))}
-          </ul>
-        </Reveal>
-
-        <Reveal as="section" class="vB-section" id="vB-awards">
-          <SectionHead
-            num="06"
-            kicker="AWARDS & FUNDING"
-            title="Recognition."
-          />
-          <div class="vB-awards">
-            {portfolio.awards.map((a) => (
-              <div class="vB-award">
-                <div class="vB-award-year">{a.date}</div>
-                <div class="vB-award-main">
-                  <div class="vB-award-title">{a.title}</div>
-                  <div class="vB-award-org">{a.org}</div>
-                </div>
-                <div class="vB-award-mark" aria-hidden="true">
-                  ★
-                </div>
-              </div>
-            ))}
+    <section id="about" class="section">
+      <Rail {...rail("about")} />
+      <div class="content content--about">
+        <p class="prose">
+          I build the payment platform behind Mercari's marketplace as an
+          Engineering Manager at Merpay, leading two payment-core teams while
+          still shipping code. On the side I run engineering at Yomoyama
+          (real-estate price estimation) and RINGBELL (a marriage agency
+          service). Trained in image processing (MSc, Tokyo University of
+          Science); off the clock I photograph Tokyo and follow a corgi around
+          it.
+        </p>
+        <p class="interests">{interests}</p>
+        <dl class="vitals">
+          <div class="vital">
+            <dt>Born</dt>
+            <dd>{portfolio.birthplace}</dd>
           </div>
-        </Reveal>
+          <div class="vital">
+            <dt>Base</dt>
+            <dd>{portfolio.location}</dd>
+          </div>
+          <div class="vital">
+            <dt>Lang</dt>
+            <dd>{langValue}</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
 
-        <Reveal as="section" class="vB-section" id="vB-contact">
-          <SectionHead
-            num="07"
-            kicker="CONTACT"
-            title="Say hello."
-            sub="Mail is best."
+    <section id="experience" class="section">
+      <Rail {...rail("experience")} sticky />
+      <div class="content">
+        {portfolio.experience.map((e) => (
+          <ExperienceRow
+            role={e.role}
+            org={e.org}
+            range={e.range}
+            body={e.body}
+            tag={e.tag}
           />
-          <div class="vB-contact-grid">
-            {portfolio.links.map((l, i) => {
-            	const external = l.href.startsWith("http");
-            	return (
+        ))}
+      </div>
+    </section>
+
+    <section id="education" class="section section--education">
+      <Rail {...rail("education")} />
+      <div class="content">
+        {portfolio.education.map((e) => (
+          <article class="ledger-row ledger-row--edu">
+            <span class="ledger-date">{e.range}</span>
+            <div class="ledger-body">
+              <h3>
+                <span class="role">{e.degree}</span> — <span
+                  class="org"
+                >{e.org}</span>
+              </h3>
+              <p>{e.body}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="talks" class="section">
+      <Rail {...rail("talks")} sticky />
+      <div class="content">
+        {portfolio.talks.map((t) => (
+          <LedgerLink
+            date={t.date}
+            title={t.title}
+            venue={t.venue}
+            venueHighlight={t.venueHighlight}
+            href={t.href}
+          />
+        ))}
+        {portfolio.academic.map((paper) => (
+          <div class="ledger-row ledger-row--paper">
+            <span class="ledger-date">
+              <span class="paper-key">Paper</span>
+              {paper.date}
+            </span>
+            <div class="ledger-body">
+              <span
+                class="title title--paper"
+                lang={isJapanese(paper.title) ? "ja" : undefined}
+              >{paper.title}</span>
+              <span class="venue">{paper.venue}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section id="writing" class="section">
+      <Rail {...rail("writing")} sticky />
+      <div class="content">
+        {portfolio.publications.map((p) => (
+          <LedgerLink
+            date={p.date}
+            title={p.title}
+            venue={p.venue}
+            href={p.href}
+          />
+        ))}
+      </div>
+    </section>
+
+    <section id="awards" class="section">
+      <Rail {...rail("awards")} />
+      <div class="content">
+        {portfolio.awards.map((a) => (
+          <div class="ledger-row ledger-row--award">
+            <span class="ledger-date">{a.date}</span>
+            <div class="ledger-body">
+              <span class="award-title">{a.title}</span>
+              <span class="award-org">{a.org}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <footer id="contact">
+      <hr class="rule-strong" />
+      <div class="contact-grid">
+        <h2 class="contact-display">Get in touch</h2>
+        <ul class="contact-links">
+          {portfolio.links.map((l) => {
+          	const external = l.href.startsWith("http");
+          	return (
+             <li>
                <a
                  href={l.href}
                  target={external ? "_blank" : undefined}
-                 rel={external ? "noopener noreferrer" : undefined}
-                 class="vB-contact-card"
+                 rel={external ? "noopener" : undefined}
                >
-                 <div class="vB-contact-row-top">
-                   <div class="vB-contact-num">
-                     {pad2(i + 1)} / {linksTotal}
-                   </div>
-                   <div class="vB-contact-arrow">↗</div>
-                 </div>
-                 <div class="vB-contact-label">{l.label}</div>
-                 <div class="vB-contact-val">{l.short}</div>
-                 {external && (
-                   <span class="vB-sr-only">(opens in new tab)</span>
-                 )}
+                 <span class="key">{l.label}</span>
+                 <span class="val">{l.short}</span>
                </a>
-             );
-            })}
-          </div>
-        </Reveal>
-
-        <footer class="vB-colo">
-          <div class="vB-colo-divider" aria-hidden="true">⁂</div>
-          <div class="vB-colo-v">
-            © <span>{coloYear}</span> Shunta Komatsu — all rights reserved.
-          </div>
-          <div class="vB-colo-end">— end —</div>
-        </footer>
-      </article>
-    </div>
+             </li>
+           );
+          })}
+        </ul>
+      </div>
+      <div class="colophon">
+        <p>
+          © {year} Shunta Komatsu · 5n7.me · built {buildDate} · {commit} · Set
+          in Archivo, IBM Plex Mono &amp; Noto Sans JP · Astro
+          <span class="end-mark" aria-hidden="true"></span>
+        </p>
+      </div>
+    </footer>
   </main>
 
-  <script>
-  import "../scripts/portfolio.client.ts";
+  <script is:inline>
+  // Theme toggle. Effective theme = stored choice, else OS preference; a
+// click forces the other theme and persists it. CSS keys the active word
+// off data-effective; the head init script in Base.astro has already set
+// data-theme before first paint.
+(function () {
+	var btn = document.getElementById("theme-toggle");
+	if (!btn) return;
+	var mq = window.matchMedia("(prefers-color-scheme: dark)");
+	var stored = null;
+	try {
+		stored = localStorage.getItem("theme");
+	} catch (e) {}
+	if (stored !== "light" && stored !== "dark") stored = null;
+	var effective = function () {
+		return stored || (mq.matches ? "dark" : "light");
+	};
+	var reflect = function () {
+		var t = effective();
+		btn.setAttribute("data-effective", t);
+		btn.setAttribute(
+			"aria-label",
+			"Switch to " + (t === "dark" ? "light" : "dark") + " theme",
+		);
+	};
+	btn.addEventListener("click", function () {
+		stored = effective() === "dark" ? "light" : "dark";
+		document.documentElement.setAttribute("data-theme", stored);
+		try {
+			localStorage.setItem("theme", stored);
+		} catch (e) {}
+		reflect();
+	});
+	// Track OS changes only while no explicit choice is stored.
+	mq.addEventListener("change", function () {
+		if (!stored) reflect();
+	});
+	reflect();
+})();
   </script>
 </Base>
