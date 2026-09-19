@@ -5,11 +5,11 @@ interface Props {
 	date: string;
 	title: string;
 	venue: string;
-	venueHighlight?: string;
+	highlight?: string;
 	href: string;
 }
 
-const { date, title, venue, venueHighlight, href } = Astro.props;
+const { date, title, venue, highlight, href } = Astro.props;
 
 const titleJa = isJapanese(title);
 
@@ -21,13 +21,6 @@ const lastSpace = title.lastIndexOf(" ");
 const useTail = !titleJa && lastSpace >= 0;
 const titleHead = useTail ? title.slice(0, lastSpace + 1) : "";
 const titleLast = useTail ? title.slice(lastSpace + 1) : title;
-
-// Optional accent segment in the venue line, driven by the talk data.
-const hotIdx = venueHighlight ? venue.indexOf(venueHighlight) : -1;
-const hotLen = venueHighlight?.length ?? 0;
-const venueBefore = hotIdx >= 0 ? venue.slice(0, hotIdx) : venue;
-const venueHot = hotIdx >= 0 ? venue.slice(hotIdx, hotIdx + hotLen) : "";
-const venueAfter = hotIdx >= 0 ? venue.slice(hotIdx + hotLen) : "";
 ---
 
 <a
@@ -46,9 +39,9 @@ const venueAfter = hotIdx >= 0 ? venue.slice(hotIdx + hotLen) : "";
             >↗</span></span></>
       ) : <>{title}<span class="arrow-inline" aria-hidden="true">↗</span></>}
     </span>
-    <span class="venue">{venueBefore}{venueHot && (
-      <em class="hot">{venueHot}</em>
-    )}{venueAfter}</span>
+    <span class="venue">{venue}{highlight && (
+      <> · <em class="highlight">{highlight}</em></>
+    )}</span>
   </span>
   <span class="arrow" aria-hidden="true">↗</span>
 </a>

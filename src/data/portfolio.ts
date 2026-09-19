@@ -22,8 +22,8 @@ export interface PortfolioEducation {
 export interface PortfolioTalk {
 	title: string;
 	venue: string;
-	/* Substring of `venue` rendered in accent (at most one talk uses this). */
-	venueHighlight?: string;
+	/* Talk highlight rendered as an accent suffix after the venue. */
+	highlight?: string;
 	date: string;
 	href: string;
 }
@@ -173,6 +173,19 @@ export const portfolio: Portfolio = {
 	],
 	talks: [
 		{
+			title: "決済基盤と会計を繋ぐ仕組みづくり",
+			venue: "Merpay Tech Talk — メルカリグループ全体を支える決済基盤の全容 [会計編]",
+			date: "Sep 2026",
+			href: "https://mercari.connpass.com/event/404444/",
+		},
+		{
+			title: "決済プラットフォームと経理を繋ぐ仕組みづくり",
+			venue: 'ドメインエキスパートの知見を "チームの資産" に変える方法',
+			highlight: "Invited",
+			date: "Sep 2026",
+			href: "https://levtechlab.connpass.com/event/400228/",
+		},
+		{
 			title: "The Journey to AI-Native: Driving Company-Wide Adoption Through Data and Practice",
 			venue: "mercari Gears 2025",
 			date: "Nov 2025",
@@ -180,8 +193,8 @@ export const portfolio: Portfolio = {
 		},
 		{
 			title: "Cursor Meetup Tokyo",
-			venue: "Cursor Meetup Tokyo · 6000+ attendees",
-			venueHighlight: "6000+ attendees",
+			venue: "Cursor Meetup Tokyo",
+			highlight: "6000+ attendees",
 			date: "Jun 2025",
 			href: "https://speakerdeck.com/iamshunta/cursor-meetup-tokyo",
 		},

@@ -377,7 +377,7 @@ main {
 	margin-top: 6px;
 }
 
-.venue .hot {
+.venue .highlight {
 	color: var(--accent-text);
 	font-style: normal;
 }
