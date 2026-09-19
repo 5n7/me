@@ -125,9 +125,16 @@ export const portfolio: Portfolio = {
 			body: "Engineering Manager for two teams in Merpay — Payment Core (since Mar 2025) and Payment Solution (since Jan 2026) — leading 10 engineers in total. Also contributing as an individual contributor on the PCP Foundation team since Mar 2026.",
 		},
 		{
+			role: "Technical Advisor",
+			org: "RINGBELL, Inc.",
+			range: "Aug 2026 — Present",
+			tag: "Side",
+			body: "Advising on the architecture and development of a marriage agency service in Japan.",
+		},
+		{
 			role: "Senior Software Engineer",
 			org: "RINGBELL, Inc.",
-			range: "Jan 2026 — Present",
+			range: "Jan 2026 — Jul 2026",
 			tag: "Side",
 			body: "Main developer and architect of a marriage agency service in Japan.",
 		},
@@ -302,7 +309,7 @@ export const heroHighlights: HeroHighlight[] = [
 	{
 		label: "Side",
 		value: "RINGBELL",
-		valueAux: "/ Sr. SWE",
+		valueAux: "/ Advisor",
 		foot: "Marriage agency platform",
 	},
 	{
@@ -315,8 +322,8 @@ export const heroHighlights: HeroHighlight[] = [
 export const siteMetadata: SiteMetadata = {
 	title: "Shunta Komatsu — 5n7.me",
 	description:
-		"Shunta Komatsu — Engineering Manager at Merpay, CTO at Yomoyama, Sr. SWE at RINGBELL. Payment platform, AI-native teams, and small businesses. Based in Tokyo.",
-	ogDescription: "EM at Merpay. CTO at Yomoyama. Sr. SWE at RINGBELL. Based in Tokyo.",
+		"Shunta Komatsu — Engineering Manager at Merpay, CTO at Yomoyama, Advisor at RINGBELL. Payment platform, AI-native teams, and small businesses. Based in Tokyo.",
+	ogDescription: "EM at Merpay. CTO at Yomoyama. Advisor at RINGBELL. Based in Tokyo.",
 	siteUrl: "https://5n7.me",
 	ogImage: "https://5n7.me/og.png",
 	profileImage: "https://5n7.me/profile.webp",
