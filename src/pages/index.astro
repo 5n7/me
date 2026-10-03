@@ -53,6 +53,8 @@ const year = new Date().getFullYear();
   <a class="skip-link" href="#main">Skip to content</a>
 
   <div id="top" class="page">
+    <div class="page-tools"><ThemeToggle /></div>
+
     <header class="profile">
       <div class="identity">
         <CorgiAvatar />
@@ -65,8 +67,6 @@ const year = new Date().getFullYear();
         {portfolio.roles.map((role) => <span>{role}</span>)}
       </p>
       <p class="profile-location">{portfolio.location}</p>
-
-      <div class="profile-tools"><ThemeToggle /></div>
 
       <nav class="navigation" aria-label="Contents">
         {navigation.map((item) => <a href={`#${item.id}`}>{item.label}</a>)}

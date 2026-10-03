@@ -57,10 +57,9 @@ components:
   theme-toggle:
     backgroundColor: "transparent"
     textColor: "{colors.muted}"
-    typography: "{typography.metadata}"
     padding: "0"
+    size: "2.75rem"
   theme-toggle-hover: { textColor: "{colors.text}" }
-  theme-toggle-pressed: { textColor: "{colors.text}" }
   navigation-link:
     textColor: "{colors.muted}"
     typography: "{typography.label}"
@@ -120,7 +119,7 @@ publication size and line height, with regular weight.
 The introduction uses `intro` and a 70ch maximum width. Entry descriptions use
 `description` and a 72ch maximum width. Profile roles use `label` with a 1.7 line
 height. Publication metadata also uses a 1.7 line height; experience periods
-and the theme control inherit a 1.75 line height. Dates use tabular numerals.
+inherit a 1.75 line height. Dates use tabular numerals.
 Current and side-role notes use italics.
 
 Japanese text retains `lang="ja"`, strict line breaking, and wrapping anywhere.
@@ -130,11 +129,11 @@ rows reduce from `description` to `label`.
 
 ## Layout
 
-| Viewport      | Page layout                                                                                                                                  |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Above 960px   | Centered 68rem maximum width, a 13rem profile column, a flexible content column, and a 5rem column gap. Padding is 4.5rem 2.5rem 2rem.       |
-| At most 960px | One column, 46rem maximum width, and a 2rem gap. Top padding becomes 2.5rem. The avatar sits beside the name; navigation wraps horizontally. |
-| At most 480px | Page padding is 1.5rem 1.25rem. Entry headings stack, and current-work details sit below their roles.                                        |
+| Viewport      | Page layout                                                                                                                                                                                 |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Above 960px   | Centered 68rem maximum width, a 13rem profile column, a flexible content column, and a 5rem column gap. Padding is 4.5rem 2.5rem 2rem.                                                      |
+| At most 960px | One column, 46rem maximum width, and a 2rem gap. Top padding becomes 2.5rem. The avatar sits left of the name, with the theme toggle at the row's right end; navigation wraps horizontally. |
+| At most 480px | Page padding is 1.5rem 1.25rem. Entry headings stack, and current-work details sit below their roles.                                                                                       |
 
 The profile sticks 3rem from the top only when the viewport is at least 961px
 wide and 760px tall; it then spans the footer row so it stays pinned to the page
@@ -177,11 +176,17 @@ border or panel background.
   focus apply the heading color and an underline. Link height is at least
   2.25rem on desktop and 2.75rem in the wrapping layout. Mobile navigation has
   top and bottom rules, 0.5rem vertical padding, and a 1.25rem column gap.
-- The theme toggle has a 16px moon icon, a 0.5rem gap, and a 2.75rem minimum
-  height. It has no border or background. Hover and the pressed state use the
-  heading color. `aria-pressed` identifies dark mode; the control stays hidden
-  until its script initializes. It precedes the navigation in source order so
-  focus order matches its single-column position beside the location.
+- The theme toggle is an icon-only 2.75rem square button in the page's
+  top-right corner, outside the profile column. It shows an 18px moon in light
+  mode and a sun in dark mode, has no border or background, and uses the heading
+  color on hover. Its accessible name is "Dark mode" and `aria-pressed`
+  identifies dark mode; the control stays hidden until its script initializes.
+  A `title` shows the same name on hover. The icon, not the hit area, aligns
+  with the content edge, and focus uses a 2px outline offset. On desktop it
+  sits 1.25rem from the top, above the content column, and scrolls with the
+  page. In the single-column layout it is centered on the avatar row; the
+  avatar sits to the left of the name, and the row reserves 2rem on the right.
+  It follows the skip link and precedes the profile in source order.
 - Current work is a definition list with a 3rem label column and 0.75rem column
   gaps. Rows have a 0.375rem gap, increasing to 0.75rem on narrow screens.
 - Experience entries place the role and date on one baseline when space
