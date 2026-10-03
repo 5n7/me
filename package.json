@@ -7,6 +7,7 @@
     "astro": "astro",
     "build": "astro build",
     "check": "astro check",
+    "deploy": "astro build && wrangler deploy",
     "dev": "astro dev",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",

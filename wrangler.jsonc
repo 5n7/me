@@ -1,0 +1,9 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "5n7-me",
+  "compatibility_date": "2026-10-03",
+  "assets": {
+    "directory": "./dist",
+  },
+  "routes": [{ "pattern": "5n7.me", "custom_domain": true }],
+}
