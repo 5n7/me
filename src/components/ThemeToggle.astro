@@ -1,0 +1,72 @@
+<button
+  id="theme-toggle"
+  class="theme-toggle"
+  type="button"
+  aria-pressed="false"
+  hidden
+>
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M20.8 13.1A9 9 0 0 1 10.9 3.2 9 9 0 1 0 20.8 13.1Z"></path>
+  </svg>
+  <span>Dark mode</span>
+</button>
+
+<script>
+import { isTheme, type Theme, themeColors, themeStorageKey } from "../lib/theme.ts";
+
+const button = document.querySelector<HTMLButtonElement>("#theme-toggle");
+const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+const readPreference = (): Theme | null => {
+	try {
+		const value = localStorage.getItem(themeStorageKey);
+		return isTheme(value) ? value : null;
+	} catch {
+		return null;
+	}
+};
+
+let preference = readPreference();
+
+const applyTheme = () => {
+	const theme = preference ?? (systemTheme.matches ? "dark" : "light");
+	document.documentElement.dataset.theme = theme;
+	button?.setAttribute("aria-pressed", String(theme === "dark"));
+	document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+		meta.setAttribute("content", themeColors[theme]);
+	});
+};
+
+if (button) {
+	button.hidden = false;
+	button.addEventListener("click", () => {
+		preference =
+			document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+		try {
+			localStorage.setItem(themeStorageKey, preference);
+		} catch {
+			// Theme selection also works when storage is unavailable.
+		}
+		applyTheme();
+	});
+}
+
+systemTheme.addEventListener("change", applyTheme);
+window.addEventListener("storage", (event) => {
+	if (event.key === themeStorageKey || event.key === null) {
+		preference = readPreference();
+		applyTheme();
+	}
+});
+applyTheme();
+</script>

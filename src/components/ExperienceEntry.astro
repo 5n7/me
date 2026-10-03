@@ -1,0 +1,19 @@
+---
+import type { PortfolioExperience } from "../data/portfolio.ts";
+import { formatPeriod } from "../lib/period.ts";
+
+type Props = PortfolioExperience;
+
+const { role, body, tag } = Astro.props;
+---
+
+<article class="experience-entry">
+  <div class="entry-heading">
+    <h4>{role}</h4>
+    <p class="entry-period">
+      <span>{formatPeriod(Astro.props)}</span>
+      {tag && <span class="role-note">{tag}</span>}
+    </p>
+  </div>
+  <p class="entry-description">{body}</p>
+</article>

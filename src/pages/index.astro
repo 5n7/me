@@ -1,0 +1,222 @@
+---
+import CorgiAvatar from "../components/CorgiAvatar.astro";
+import ExperienceEntry from "../components/ExperienceEntry.astro";
+import PublicationEntry from "../components/PublicationEntry.astro";
+import Section from "../components/Section.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
+import { portfolio } from "../data/portfolio.ts";
+import Base from "../layouts/Base.astro";
+import { langOf } from "../lib/lang.ts";
+import { isExternal } from "../lib/link.ts";
+import { formatPeriod } from "../lib/period.ts";
+import "../styles/portfolio.css";
+
+const navigation = [
+	{ id: "about", label: "About" },
+	{ id: "experience", label: "Experience" },
+	{ id: "writing", label: "Writing" },
+	{ id: "talks", label: "Talks" },
+	{ id: "education", label: "Education" },
+	{ id: "awards", label: "Awards" },
+	{ id: "contact", label: "Contact" },
+];
+
+// Group role progression without changing the underlying career records.
+const employers = Array.from(
+	new Set(portfolio.experience.map((entry) => entry.org)),
+	(org) => ({
+		org,
+		roles: portfolio.experience.filter((entry) => entry.org === org),
+	}),
+);
+
+const linkedIn = portfolio.links.find((link) => link.label === "LinkedIn");
+
+const personalDetails = [
+	{ label: "Focus", value: portfolio.focus.join(" · ") },
+	{ label: "Interests", value: portfolio.interests.join(", ") },
+	{ label: "Outside work", value: portfolio.pastimes.join(" · ") },
+	{ label: "Born", value: portfolio.birthplace },
+	{ label: "Based", value: `${portfolio.location} · ${portfolio.coordinates}` },
+	{
+		label: "Languages",
+		value: portfolio.languages
+			.map((language) => `${language.name} (${language.level})`)
+			.join(" · "),
+	},
+];
+
+const year = new Date().getFullYear();
+---
+
+<Base>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div id="top" class="page">
+    <header class="profile">
+      <div class="identity">
+        <CorgiAvatar />
+        <div>
+          <h1>{portfolio.name}</h1>
+          <p class="name-ja" lang="ja">{portfolio.nameJa}</p>
+        </div>
+      </div>
+      <p class="profile-roles">
+        {portfolio.roles.map((role) => <span>{role}</span>)}
+      </p>
+      <p class="profile-location">{portfolio.location}</p>
+
+      <div class="profile-tools"><ThemeToggle /></div>
+
+      <nav class="navigation" aria-label="Contents">
+        {navigation.map((item) => <a href={`#${item.id}`}>{item.label}</a>)}
+      </nav>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <section id="about" class="introduction" aria-label="About">
+        <p class="intro-text">
+          I build the payment platform behind Mercari's marketplace as an
+          Engineering Manager at Merpay, leading two payment-core teams while
+          still shipping code. On the side I run engineering at Yomoyama
+          (real-estate price estimation) and advise RINGBELL (a marriage agency
+          service). Trained in image processing (MSc, Tokyo University of
+          Science); off the clock I photograph Tokyo and follow a corgi around
+          it.
+        </p>
+        <dl
+          id="now"
+          class="current-work"
+          aria-label="Current work and location"
+        >
+          {portfolio.highlights.map((item) => (
+            <div>
+              <dt>{item.label}</dt>
+              <dd>
+                <span
+                  class="current-role"
+                >{item.name}{item.role && ` / ${item.role}`}</span>
+                <span class="current-detail">{item.detail}</span>
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <Section id="experience" title="Experience">
+        {linkedIn && (
+          <a
+            slot="aside"
+            class="section-link"
+            href={linkedIn.href}
+            target="_blank"
+            rel="noopener"
+          >
+            Full work history on LinkedIn
+          </a>
+        )}
+        <div class="employers">
+          {employers.map((employer) => (
+            <div class="employer">
+              <h3>{employer.org}</h3>
+              <div class="experience-list">
+                {employer.roles.map((entry) => <ExperienceEntry {...entry} />)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section id="writing" title="Writing">
+        <ul class="publication-list" role="list">
+          {portfolio.publications.map((entry) => (
+            <PublicationEntry {...entry} />
+          ))}
+        </ul>
+      </Section>
+
+      <Section id="talks" title="Talks">
+        <ul class="publication-list" role="list">
+          {portfolio.talks.map((entry) => <PublicationEntry {...entry} />)}
+        </ul>
+        <div class="research">
+          <h3>Research</h3>
+          {portfolio.academic.map((paper) => (
+            <article class="publication-entry">
+              <h4 class="paper-title" lang={langOf(paper.title)}>
+                {paper.title}
+              </h4>
+              <p class="entry-details">
+                <span>{paper.venue}</span>
+                <span class="entry-date">{paper.date}</span>
+              </p>
+            </article>
+          ))}
+        </div>
+      </Section>
+
+      <Section id="education" title="Education">
+        <div class="education-list">
+          {portfolio.education.map((entry) => (
+            <article>
+              <h3>{entry.degree}</h3>
+              <p class="entry-details">
+                <span>{entry.org}</span>
+                <span class="entry-date">{formatPeriod(entry)}</span>
+              </p>
+              <p class="entry-description">{entry.body}</p>
+            </article>
+          ))}
+        </div>
+      </Section>
+
+      <Section id="awards" title="Awards">
+        <ul class="award-list" role="list">
+          {portfolio.awards.map((award) => (
+            <li>
+              <div class="entry-heading">
+                <h3>{award.title}</h3>
+                <span class="entry-date">{award.date}</span>
+              </div>
+              <p class="entry-details">{award.org}</p>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section id="personal" title="More about me">
+        <dl class="personal-details">
+          {personalDetails.map((item) => (
+            <div>
+              <dt>{item.label}</dt>
+              <dd>{item.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </Section>
+
+      <Section id="contact" title="Contact">
+        <ul class="contact-links" role="list">
+          {portfolio.links.map((link) => {
+          	const external = isExternal(link.href);
+          	return (
+             <li>
+               <span>{link.label}</span>
+               <a
+                 href={link.href}
+                 target={external ? "_blank" : undefined}
+                 rel={external ? "noopener" : undefined}
+               >{link.short}</a>
+             </li>
+           );
+          })}
+        </ul>
+      </Section>
+    </main>
+
+    <footer class="footer">
+      <p>© {year} {portfolio.name}</p>
+      <a href="#top">Back to top</a>
+    </footer>
+  </div>
+</Base>

@@ -1,0 +1,23 @@
+---
+import type { PortfolioPublication } from "../data/portfolio.ts";
+import { langOf } from "../lib/lang.ts";
+
+type Props = PortfolioPublication;
+
+const { title, venue, date, href, highlight } = Astro.props;
+---
+
+<li class="publication-entry">
+  <a
+    class="publication-title"
+    href={href}
+    target="_blank"
+    rel="noopener"
+    lang={langOf(title)}
+  >{title}</a>
+  <p class="entry-details">
+    <span lang={langOf(venue)}>{venue}</span>
+    <span class="entry-date">{date}</span>
+    {highlight && <span>{highlight}</span>}
+  </p>
+</li>
