@@ -1,0 +1,120 @@
+---
+import { portfolio, siteMetadata } from "../data/portfolio.ts";
+import { isExternal } from "../lib/link.ts";
+import { themeColors, themeStorageKey } from "../lib/theme.ts";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title = siteMetadata.title, description = siteMetadata.description } =
+	Astro.props;
+
+const site = Astro.site;
+if (!site) throw new Error("Set `site` in astro.config.mjs");
+
+const homeUrl = site.href;
+const ogImage = new URL("/og.png", site).href;
+const currentOrgs = new Set(
+	portfolio.experience
+		.filter((entry) => !entry.end)
+		.map((entry) => entry.org),
+);
+
+const personLd = {
+	"@context": "https://schema.org",
+	"@type": "Person",
+	name: portfolio.name,
+	alternateName: portfolio.nameJa,
+	url: homeUrl,
+	image: new URL("/profile.webp", site).href,
+	jobTitle: portfolio.roles[0],
+	worksFor: Array.from(currentOrgs, (name) => ({
+		"@type": "Organization",
+		name,
+	})),
+	address: {
+		"@type": "PostalAddress",
+		addressLocality: "Tokyo",
+		addressCountry: "JP",
+	},
+	sameAs: portfolio.links
+		.filter((link) => isExternal(link.href))
+		.map((link) => link.href),
+};
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={portfolio.name} />
+    <meta name="color-scheme" content="light dark" />
+    <meta
+      name="theme-color"
+      content={themeColors.light}
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content={themeColors.dark}
+      media="(prefers-color-scheme: dark)"
+    />
+
+    <!-- Apply a stored theme choice before first paint to avoid FOUC. -->
+    <script is:inline define:vars={{ themeColors, themeStorageKey }}>
+    (function () {
+	try {
+		var t = localStorage.getItem(themeStorageKey);
+		if (Object.prototype.hasOwnProperty.call(themeColors, t)) {
+			document.documentElement.setAttribute("data-theme", t);
+			var color = themeColors[t];
+			document
+				.querySelectorAll('meta[name="theme-color"]')
+				.forEach(function (m) {
+					m.setAttribute("content", color);
+				});
+		}
+	} catch (e) {}
+})();
+    </script>
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={siteMetadata.ogDescription} />
+    <meta property="og:url" content={homeUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="ja_JP" />
+    <meta property="profile:first_name" content={portfolio.givenName} />
+    <meta property="profile:last_name" content={portfolio.familyName} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={siteMetadata.ogDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="canonical" href={homeUrl} />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-180.png" />
+
+    <!-- JSON-LD Person schema -->
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(personLd)}
+    />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
