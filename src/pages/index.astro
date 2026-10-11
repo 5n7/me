@@ -1,11 +1,13 @@
 ---
 import CorgiAvatar from "../components/CorgiAvatar.astro";
+import CorgiRun from "../components/CorgiRun.astro";
 import ExperienceEntry from "../components/ExperienceEntry.astro";
 import PublicationEntry from "../components/PublicationEntry.astro";
 import Section from "../components/Section.astro";
 import ThemeToggle from "../components/ThemeToggle.astro";
 import { portfolio } from "../data/portfolio.ts";
 import Base from "../layouts/Base.astro";
+import { runId } from "../lib/course.ts";
 import { langOf } from "../lib/lang.ts";
 import { isExternal } from "../lib/link.ts";
 import { formatPeriod } from "../lib/period.ts";
@@ -129,20 +131,22 @@ const year = new Date().getFullYear();
 
       <Section id="writing" title="Writing">
         <ul class="publication-list" role="list">
-          {portfolio.publications.map((entry) => (
-            <PublicationEntry {...entry} />
+          {portfolio.publications.map((entry, i) => (
+            <PublicationEntry {...entry} runId={runId("writing", i)} />
           ))}
         </ul>
       </Section>
 
       <Section id="talks" title="Talks">
         <ul class="publication-list" role="list">
-          {portfolio.talks.map((entry) => <PublicationEntry {...entry} />)}
+          {portfolio.talks.map((entry, i) => (
+            <PublicationEntry {...entry} runId={runId("talk", i)} />
+          ))}
         </ul>
         <div class="research">
           <h3>Research</h3>
-          {portfolio.academic.map((paper) => (
-            <article class="publication-entry">
+          {portfolio.academic.map((paper, i) => (
+            <article class="publication-entry" data-run-id={runId("paper", i)}>
               <h4 class="paper-title" lang={langOf(paper.title)}>
                 {paper.title}
               </h4>
@@ -172,8 +176,8 @@ const year = new Date().getFullYear();
 
       <Section id="awards" title="Awards">
         <ul class="award-list" role="list">
-          {portfolio.awards.map((award) => (
-            <li>
+          {portfolio.awards.map((award, i) => (
+            <li data-run-id={runId("award", i)}>
               <div class="entry-heading">
                 <h3>{award.title}</h3>
                 <span class="entry-date">{award.date}</span>
@@ -215,8 +219,11 @@ const year = new Date().getFullYear();
     </main>
 
     <footer class="footer">
-      <p>© {year} {portfolio.name}</p>
-      <a href="#top">Back to top</a>
+      <CorgiRun />
+      <div class="footer-meta">
+        <p>© {year} {portfolio.name}</p>
+        <a href="#top">Back to top</a>
+      </div>
     </footer>
   </div>
 </Base>

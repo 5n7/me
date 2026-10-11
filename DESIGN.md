@@ -9,6 +9,11 @@ colors:
   line: "#e6e8eb"
   link: "#295a9f"
   selection: "#e2ebf8"
+  corgi-ink: "#2b221c"
+  corgi-coat: "#e3a052"
+  corgi-shade: "#c7853a"
+  corgi-cream: "#fbf1df"
+  corgi-tongue: "#e68593"
   dark-background: "#181a1d"
   dark-text: "#edeef0"
   dark-body: "#c1c5cb"
@@ -16,6 +21,11 @@ colors:
   dark-line: "#30343a"
   dark-link: "#9bbdf0"
   dark-selection: "#2c405c"
+  dark-corgi-ink: "#1a1512"
+  dark-corgi-coat: "#d0924a"
+  dark-corgi-shade: "#ad7535"
+  dark-corgi-cream: "#ecdfc8"
+  dark-corgi-tongue: "#d6737f"
   print-text: "#000000"
   print-body: "#222222"
   print-muted: "#444444"
@@ -81,7 +91,8 @@ Creative North Star: "Readable professional profile"
 The portfolio uses system typography, open lists, and a small corgi illustration.
 Headings and spacing distinguish the factual record. Blue identifies links;
 muted text identifies dates and supporting details. Reading content stays still.
-The corgi avatar makes one full turn on hover.
+The corgi avatar makes one full turn on hover. The footer carries Corgi Run, a
+small optional game along the same record.
 
 Key characteristics:
 
@@ -104,6 +115,9 @@ to section dividers. Selection pairs `selection` with `text`.
 Links use `link`. Publication and contact underlines use
 `color-mix(in srgb, var(--link) 30%, transparent)` and become `currentColor` on
 hover. Underlines are 1px thick with a 0.2em offset.
+
+The `corgi-` tokens color only the Corgi Run corgi, matching the avatar's fawn
+and cream. Every other part of the game uses the roles above.
 
 Print uses `background`, `print-text`, `print-body`, `print-muted`, and
 `print-line`. Printed links use `print-text` and have no underline.
@@ -171,7 +185,8 @@ border or panel background.
   hover, it rotates 360 degrees once over 800ms. Moving the pointer away stops
   the animation and restores the resting position. The wrapper stays still,
   so the hover area does not move. Reduced motion disables the effect. The
-  interaction uses CSS, with no button or script.
+  interaction uses CSS, with no button or script. Starting a Corgi Run plays
+  the same turn once from the game's script.
 - Navigation uses native section anchors with muted text. Hover and keyboard
   focus apply the heading color and an underline. Link height is at least
   2.25rem on desktop and 2.75rem in the wrapping layout. Mobile navigation has
@@ -199,6 +214,25 @@ border or panel background.
   screens use a 5.5rem label column and a 0.75rem gap. Contact links have 0.5rem
   vertical padding and can wrap anywhere.
 
+- Corgi Run sits in the footer, above the copyright row, with no heading. A
+  200px canvas draws the record as a road: main-line roles are signs, side
+  roles are raised dashed lanes with regular gaps that drop the corgi back to
+  the road, and talks, writing, research, and awards are pickups. A
+  footer-sized status row shows the date, role, pickup count, and time; a 30px
+  overview track below the road shows the whole course and the visible window.
+  Space, the up arrow, or a tap jumps. Space without modifier keys also starts
+  the game whenever the road is in view, unless a form control has focus. The
+  road takes focus when a run starts and draws no focus outline until the game
+  is back at the start, because the status row and cards already show its
+  state; tabbing to the waiting road shows the usual outline. Each pickup marks
+  its list entry with a link-colored dot and "Collected". Hovering or focusing
+  a list entry pans the road to its pickup. The last finished run and best time
+  persist under the `corgi-run` storage key. The game pauses when the road
+  leaves the viewport or the tab is hidden, starts only on request, stops
+  drawing after a few idle seconds, and is hidden in print, as are the marks.
+  Reduced motion removes bobbing, dust, and other idle motion. Data comes from
+  `src/lib/course.ts`, which derives it from `src/data/portfolio.ts`.
+
 Theme selection uses `data-theme` and persists under the `theme` storage key.
 A stored choice applies before the first paint. Without a choice, the page
 follows the system theme, including changes while open. Storage events sync
@@ -218,5 +252,6 @@ button semantics. HTTP contact and publication links open in a new tab with
 - Do retain native anchors, visible keyboard focus, and the print layout.
 - Don't replace the system font stack or add decorative type treatments.
 - Don't turn the existing text entries into cards or badges.
-- Don't animate the reading content or play reactions automatically.
+- Don't animate the reading content or play reactions automatically. Corgi
+  Run animates only inside its footer canvas.
 - Don't add floating hearts to the avatar interaction.

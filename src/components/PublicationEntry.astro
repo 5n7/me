@@ -2,12 +2,12 @@
 import type { PortfolioPublication } from "../data/portfolio.ts";
 import { langOf } from "../lib/lang.ts";
 
-type Props = PortfolioPublication;
+type Props = PortfolioPublication & { runId: string };
 
-const { title, venue, date, href, highlight } = Astro.props;
+const { title, venue, date, href, highlight, runId } = Astro.props;
 ---
 
-<li class="publication-entry">
+<li class="publication-entry" data-run-id={runId}>
   <a
     class="publication-title"
     href={href}
